@@ -150,7 +150,7 @@ function HomeTab({ foods, targetCal, targetProtein }) {
 
       <Card>
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, fontFamily: "Inter, sans-serif" }}>August 2026</span>
+          <span style={{ fontSize: 13, fontWeight: 600, fontFamily: "Inter, sans-serif", color: COLORS.text }}>August 2026</span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 4, fontSize: 10, color: COLORS.textMuted, marginBottom: 6, fontFamily: "Inter, sans-serif" }}>
           {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => <div key={i} style={{ textAlign: "center" }}>{d}</div>)}
@@ -282,7 +282,7 @@ function NutritionTab({ foods, setFoods, targetCal, setTargetCal, targetProtein,
               </div>
             ))}
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 10, paddingTop: 10, borderTop: `1px solid ${COLORS.accent}` }}>
-              <span style={{ fontSize: 12, fontWeight: 600, fontFamily: "Inter, sans-serif" }}>Total</span>
+              <span style={{ fontSize: 12, fontWeight: 600, fontFamily: "Inter, sans-serif", color: COLORS.text }}>Total</span>
               <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: COLORS.accent }}>{totals.cal} kcal · {totals.protein}g</span>
             </div>
           </Card>
@@ -306,7 +306,7 @@ function NutritionTab({ foods, setFoods, targetCal, setTargetCal, targetProtein,
           {NUTRITION_HISTORY.slice().reverse().map((d, i) => (
             <Card key={i} style={{ padding: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, fontFamily: "Inter, sans-serif" }}>{d.date}</span>
+                <span style={{ fontSize: 12, fontFamily: "Inter, sans-serif", color: COLORS.text }}>{d.date}</span>
                 <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: COLORS.textMuted }}>{d.cal} kcal · {d.protein}g</span>
               </div>
             </Card>
@@ -427,7 +427,7 @@ function WorkoutRow({ e }) {
   return (
     <Card style={{ padding: 12 }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-        <span style={{ fontSize: 12, fontFamily: "Inter, sans-serif" }}>{e.exercise}</span>
+        <span style={{ fontSize: 12, fontFamily: "Inter, sans-serif", color: COLORS.text }}>{e.exercise}</span>
         <span style={{ fontSize: 11, color: COLORS.textMuted, fontFamily: "Inter, sans-serif" }}>{e.date}</span>
       </div>
       <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: COLORS.textMuted }}>{e.weight}kg · {e.reps}</span>
