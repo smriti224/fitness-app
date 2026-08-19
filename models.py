@@ -35,22 +35,27 @@ class WeightLog(db.Model):
 
 
 class FoodPreset(db.Model):
-    """Saved food items - typing a matching name autofills calories/protein."""
+    """Saved food items - typing a matching name autofills calories/protein.
+    base_grams is the portion the calories/protein are for (e.g. 100g of yoghurt = 100 kcal),
+    so logging a different gram amount can scale proportionally."""
     __tablename__ = "food_presets"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
     calories = db.Column(db.Integer, nullable=False)
     protein = db.Column(db.Float, nullable=False)
+    base_grams = db.Column(db.Integer, nullable=False, default=100)
 
 
 class FoodLog(db.Model):
-    """One row per food you log - no meal-type labels, just a running list per day."""
+    """One row per food you log - no meal-type labels, just a running list per day.
+    grams is optional and purely informational - it is never summed into daily totals."""
     __tablename__ = "food_logs"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(10), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     calories = db.Column(db.Integer, nullable=False)
     protein = db.Column(db.Float, nullable=False)
+    grams = db.Column(db.Integer, nullable=True)
 
 
 class Settings(db.Model):

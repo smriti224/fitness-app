@@ -145,23 +145,39 @@ def weight_average():
 @app.route("/api/foods/presets", methods=["GET"])
 def get_presets():
     rows = FoodPreset.query.all()
-    return jsonify([{"name": r.name, "calories": r.calories, "protein": r.protein} for r in rows])
+    return jsonify(
+        [{"name": r.name, "calories": r.calories, "protein": r.protein, "base_grams": r.base_grams} for r in rows]
+    )
 
 
 @app.route("/api/foods/presets", methods=["POST"])
 def add_preset():
-    """Body: { name, calories, protein } - saved once, reused via autofill later."""
+    """Body: { name, calories, protein, base_grams } - saved once, reused via autofill later.
+    base_grams is the portion size the calories/protein figures are for (e.g. 100)."""
     data = request.json
-    db.session.add(FoodPreset(name=data["name"], calories=data["calories"], protein=data["protein"]))
+    db.session.add(
+        FoodPreset(
+            name=data["name"],
+            calories=data["calories"],
+            protein=data["protein"],
+            base_grams=data.get("base_grams", 100),
+        )
+    )
     db.session.commit()
     return jsonify({"status": "saved"})
 
 
 @app.route("/api/foods", methods=["POST"])
 def log_food():
-    """Body: { date, name, calories, protein } - one entry in the day's running food list."""
+    """Body: { date, name, calories, protein, grams } - grams is optional, purely informational."""
     data = request.json
-    f = FoodLog(date=data["date"], name=data["name"], calories=data["calories"], protein=data["protein"])
+    f = FoodLog(
+        date=data["date"],
+        name=data["name"],
+        calories=data["calories"],
+        protein=data["protein"],
+        grams=data.get("grams"),
+    )
     db.session.add(f)
     db.session.commit()
     return jsonify({"id": f.id, "status": "saved"})
@@ -176,8 +192,43 @@ def get_foods():
         q = q.filter_by(date=date_param)
     rows = q.order_by(FoodLog.id).all()
     return jsonify(
-        [{"id": r.id, "date": r.date, "name": r.name, "calories": r.calories, "protein": r.protein} for r in rows]
+        [
+            {
+                "id": r.id, "date": r.date, "name": r.name,
+                "calories": r.calories, "protein": r.protein, "grams": r.grams,
+            }
+            for r in rows
+        ]
     )
+
+
+@app.route("/api/foods/<int:food_id>", methods=["PUT"])
+def update_food(food_id):
+    """Body: any of { name, calories, protein, grams } - only the fields you send are changed."""
+    f = FoodLog.query.get(food_id)
+    if not f:
+        return jsonify({"error": "not found"}), 404
+    data = request.json
+    if "name" in data:
+        f.name = data["name"]
+    if "calories" in data:
+        f.calories = data["calories"]
+    if "protein" in data:
+        f.protein = data["protein"]
+    if "grams" in data:
+        f.grams = data["grams"]
+    db.session.commit()
+    return jsonify({"status": "updated"})
+
+
+@app.route("/api/foods/<int:food_id>", methods=["DELETE"])
+def delete_food(food_id):
+    f = FoodLog.query.get(food_id)
+    if not f:
+        return jsonify({"error": "not found"}), 404
+    db.session.delete(f)
+    db.session.commit()
+    return jsonify({"status": "deleted"})
 
 
 # ---------------------------------------------------------------------------
