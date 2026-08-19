@@ -1,29 +1,60 @@
 import 'package:flutter/material.dart';
+import 'theme/app_colors.dart';
 import 'screens/home_screen.dart';
+import 'screens/nutrition_screen.dart';
+
 void main() {
   runApp(const FlexApp());
 }
 
-class FlexApp extends StatelessWidget {
+class FlexApp extends StatefulWidget {
   const FlexApp({super.key});
 
   @override
+  State<FlexApp> createState() => _FlexAppState();
+}
+
+class _FlexAppState extends State<FlexApp> {
+  bool _isDark = false;
+
+  void _toggleTheme() {
+    setState(() => _isDark = !_isDark);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flex',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: const Color(0xFF4C7A3D), // same green from the mockup
-        fontFamily: 'Roboto',
+    final colors = _isDark ? AppColors.dark : AppColors.light;
+    return AppTheme(
+      colors: colors,
+      isDark: _isDark,
+      toggleMode: _toggleTheme,
+      child: MaterialApp(
+        title: 'Flex',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          scaffoldBackgroundColor: colors.bg,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: colors.accent,
+            brightness: _isDark ? Brightness.dark : Brightness.light,
+            primary: colors.accent,
+            surface: colors.surface,
+          ),
+          cardTheme: CardThemeData(
+            color: colors.surface,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              side: BorderSide(color: colors.border),
+            ),
+          ),
+        ),
+        home: const HomeShell(),
       ),
-      home: const HomeShell(),
     );
   }
 }
 
-/// The 5-tab shell. Each tab is currently just a placeholder screen -
-/// we'll replace these one at a time with the real screens.
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 
@@ -36,7 +67,7 @@ class _HomeShellState extends State<HomeShell> {
 
   static const List<Widget> _screens = [
     HomeScreen(),
-    PlaceholderScreen(label: 'Nutrition'),
+    NutritionScreen(),
     PlaceholderScreen(label: 'Workout'),
     PlaceholderScreen(label: 'Weight'),
     PlaceholderScreen(label: 'Graphs'),
@@ -50,9 +81,12 @@ class _HomeShellState extends State<HomeShell> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppTheme.of(context).colors;
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: NavigationBar(
+        backgroundColor: colors.surface,
+        indicatorColor: colors.accent.withOpacity(0.18),
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onTabTapped,
         destinations: const [
@@ -67,20 +101,18 @@ class _HomeShellState extends State<HomeShell> {
   }
 }
 
-/// Temporary placeholder - just proves navigation works before we build the real screens.
 class PlaceholderScreen extends StatelessWidget {
   final String label;
   const PlaceholderScreen({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
+    final colors = AppTheme.of(context).colors;
     return Scaffold(
-      appBar: AppBar(title: Text(label)),
+      backgroundColor: colors.bg,
+      appBar: AppBar(title: Text(label), backgroundColor: colors.bg, foregroundColor: colors.text),
       body: Center(
-        child: Text(
-          '$label screen - coming soon',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        child: Text('$label screen - coming soon', style: TextStyle(color: colors.textMuted)),
       ),
     );
   }
