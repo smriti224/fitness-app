@@ -562,7 +562,7 @@ export default function AppMockup() {
       }}>
         <div style={{ padding: "16px 18px 10px", borderBottom: `1px solid ${COLORS.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span style={{ fontFamily: "'Barlow Condensed', sans-serif", fontSize: 20, fontWeight: 700, color: COLORS.text, letterSpacing: 0.5 }}>
-            LEAN BULK
+            FLEX
           </span>
           <button
             onClick={() => setMode(mode === "light" ? "dark" : "light")}
